@@ -1,0 +1,13 @@
+{
+  "name": "treasure-grid",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A server-authoritative online multiplayer treasure hunt.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node scripts/smoke-test.js"
+  }
+}

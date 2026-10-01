@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f2ec">
+    <meta name="description" content="Explore a shared treasure map and outscore your rival.">
+    <title>Treasure Grid — dig for glory</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/client.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Treasure Grid home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>Treasure <strong>Grid</strong></span>
+        </a>
+        <div class="header-actions">
+          <span class="challenge-tag"><span class="sparkle" aria-hidden="true">✦</span> October Monthly Challenge</span>
+          <button class="text-button" id="new-game-button" type="button" hidden>New room</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="home-view" id="home-view">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> TWO EXPLORERS · 12 TURNS · ONE WINNER</p>
+            <h1>One map.<br><span>Two treasure hunters.</span></h1>
+            <p class="hero-description">Take turns uncovering a mysterious island. Find coins, crack open chests, and watch out for traps.</p>
+          </div>
+
+          <div class="home-grid">
+            <section class="panel play-panel" aria-labelledby="play-heading">
+              <div class="panel-heading">
+                <div>
+                  <p class="section-kicker">LET'S EXPLORE</p>
+                  <h2 id="play-heading">Join the expedition</h2>
+                </div>
+                <span class="mini-sticker" aria-hidden="true">AHOY!</span>
+              </div>
+
+              <form id="create-form" class="room-form">
+                <label for="create-name">Your explorer name</label>
+                <div class="input-with-button">
+                  <input id="create-name" name="name" maxlength="18" autocomplete="nickname" placeholder="e.g. Captain Nova" required>
+                  <button class="button button-primary" type="submit">Create a room <span aria-hidden="true">↗</span></button>
+                </div>
+              </form>
+
+              <div class="form-divider"><span>OR JOIN A FRIEND</span></div>
+              <form id="join-form" class="room-form join-form">
+                <label for="join-name">Your explorer name</label>
+                <input id="join-name" name="name" maxlength="18" autocomplete="nickname" placeholder="What should we call you?" required>
+                <label for="room-code">Room code</label>
+                <div class="input-with-button">
+                  <input id="room-code" name="roomCode" class="room-code-input" maxlength="5" autocomplete="off" autocapitalize="characters" placeholder="ABC12" required>
+                  <button class="button button-secondary" type="submit">Join room <span aria-hidden="true">→</span></button>
+                </div>
+              </form>
+              <p class="error-message" id="home-error" role="alert" hidden></p>
+              <p class="privacy-note"><span aria-hidden="true">🔒</span> No account needed. Just choose a name and play.</p>
+            </section>
+
+            <aside class="panel rules-panel" aria-labelledby="rules-heading">
+              <div class="rules-title-row">
+                <div>
+                  <p class="section-kicker">THE QUICK RULES</p>
+                  <h2 id="rules-heading">How to play</h2>
+                </div>
+                <span class="rules-emoji" aria-hidden="true">🗺️</span>
+              </div>
+              <ol class="rules-list">
+                <li><span class="rule-number">01</span><div><strong>Take turns choosing a tile</strong><p>Uncover one spot on the shared 5 × 5 map.</p></div></li>
+                <li><span class="rule-number">02</span><div><strong>Collect gems and dodge traps</strong><p>Coins are worth 1, chests 2. Traps take 1 (minimum score 0).</p></div></li>
+                <li><span class="rule-number">03</span><div><strong>Lead after 12 turns</strong><p>Six turns each. The explorer with more gems wins.</p></div></li>
+              </ol>
+              <div class="rules-footer"><span class="rules-footer-icon" aria-hidden="true">🧭</span><span>Every turn starts with a countdown. You have 20 seconds to pick a tile.</span></div>
+            </aside>
+          </div>
+          <p class="footer-note">Fortune favors the curious <span aria-hidden="true">✦</span></p>
+        </section>
+
+        <section class="lobby-view" id="lobby-view" hidden>
+          <div class="game-topline">
+            <span class="live-pill lobby-pill"><span></span> EXPEDITION LOBBY</span>
+            <span class="room-code-label">ROOM <strong id="lobby-room-code">—</strong></span>
+          </div>
+          <section class="panel lobby-panel">
+            <div class="lobby-heading">
+              <div class="lobby-icon" aria-hidden="true">🗺️</div>
+              <p class="section-kicker">MAP UNFOLDED</p>
+              <h1>Waiting for your rival</h1>
+              <p>Share your room code. The expedition begins when your friend joins.</p>
+            </div>
+            <div class="share-code-box">
+              <span class="share-code-caption">YOUR ROOM CODE</span>
+              <div class="share-code-row"><strong id="share-room-code">—</strong><button id="copy-code-button" class="button button-secondary copy-button" type="button">Copy code</button></div>
+              <button id="copy-link-button" class="share-link-button" type="button">Copy invite link</button>
+            </div>
+            <div class="players-row" id="lobby-players"></div>
+            <div class="waiting-message" id="waiting-message"><span class="waiting-pulse"></span> Waiting for player 2 to join…</div>
+            <p class="lobby-rules-note"><strong>Ready your compass:</strong> Six turns each. Collect the most gems without falling behind.</p>
+          </section>
+          <p class="footer-note">Keep this tab open while your friend joins <span aria-hidden="true">✦</span></p>
+        </section>
+
+        <section class="game-view" id="game-view" hidden>
+          <div class="game-topline">
+            <span class="live-pill"><span></span> ISLAND EXPEDITION</span>
+            <span class="room-code-label">ROOM <strong id="game-room-code">—</strong></span>
+          </div>
+          <div class="scoreboard" id="scoreboard"></div>
+          <section class="panel arena-panel" aria-label="Treasure Grid game board">
+            <div class="round-line">
+              <span class="section-kicker">TURN <strong id="turn-number">1</strong> OF 12</span>
+              <span class="turn-track" id="turn-track" aria-label="Turn progress"></span>
+            </div>
+            <div class="turn-status">
+              <span class="turn-compass" id="turn-compass" aria-hidden="true">🧭</span>
+              <div><p class="turn-message" id="turn-message" aria-live="polite">Preparing the map…</p><p class="turn-clock" id="turn-clock">Get ready…</p></div>
+            </div>
+            <div class="map-wrap">
+              <div class="countdown-overlay" id="countdown-overlay" hidden><span id="countdown-number">3</span><small id="countdown-caption">GET READY</small></div>
+              <div class="treasure-board" id="treasure-board" role="group" aria-label="Covered treasure map"></div>
+            </div>
+            <div class="map-legend"><span><i class="legend-treasure"></i> Treasure</span><span><i class="legend-trap"></i> Trap</span><span><i class="legend-empty"></i> Empty</span></div>
+            <p class="last-action" id="last-action" aria-live="polite"></p>
+          </section>
+          <p class="footer-note">Every tile hides a surprise <span aria-hidden="true">✦</span></p>
+        </section>
+
+        <section class="results-view" id="results-view" hidden>
+          <div class="game-topline">
+            <span class="live-pill results-pill"><span></span> EXPEDITION COMPLETE</span>
+            <span class="room-code-label">ROOM <strong id="results-room-code">—</strong></span>
+          </div>
+          <section class="panel results-panel">
+            <div class="trophy" aria-hidden="true">🏆</div>
+            <p class="section-kicker">TREASURE TALLIED</p>
+            <h1 id="results-heading">Expedition complete!</h1>
+            <p class="results-subtitle" id="results-subtitle">What a journey.</p>
+            <div class="final-scores" id="final-scores"></div>
+            <div class="rematch-box">
+              <button class="button button-primary rematch-button" id="play-again-button" type="button">Explore again <span aria-hidden="true">↻</span></button>
+              <p id="rematch-status">Both explorers can choose Explore again to start a rematch.</p>
+            </div>
+            <button class="text-button new-room-link" id="results-new-room" type="button">Start a new room</button>
+          </section>
+        </section>
+
+        <div class="connection-status" id="connection-status" hidden><span></span><span id="connection-label">Connecting…</span></div>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </body>
+</html>
